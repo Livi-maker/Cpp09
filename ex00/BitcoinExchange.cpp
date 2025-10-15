@@ -66,13 +66,13 @@ void	BitcoinExchange::printPrices(std::string line)
 	if (line == "date | value")
 		return ;
 	int	pipe;
-	long value;
+	double value;
 
 	pipe = line.find("|");
 	if (pipe == -1)
 		throw std::runtime_error("Error: bad input => " + line);
 	date = line.substr(0, pipe);
-	value = atof(line.substr(pipe + 1).c_str());
+	value = std::strtod(line.substr(pipe + 1).c_str(), NULL);
 	checkDate(date);
 	checkValue(value);
 	actualPrice(date, value);
@@ -102,7 +102,7 @@ void	BitcoinExchange::checkDate(std::string date)
 
 }
 
-void	BitcoinExchange::checkValue(long value)
+void	BitcoinExchange::checkValue(double value)
 {
 	if (value < 0)
 		throw std::runtime_error("Error: not a positive number.");
@@ -110,7 +110,7 @@ void	BitcoinExchange::checkValue(long value)
 		throw std::runtime_error("Error: too large a number.");
 }
 
-void	BitcoinExchange::actualPrice(std::string date, int value)
+void	BitcoinExchange::actualPrice(std::string date, double value)
 {
 	std::map<std::string, double>::iterator it;
 

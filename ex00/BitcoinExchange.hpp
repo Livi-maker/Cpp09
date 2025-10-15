@@ -30,7 +30,7 @@ class BitcoinExchange
 		void	analyzeDatabase(std::string line);
 		void	printPrices(std::string line);
 		void	checkDate(std::string line);
-		void	checkValue(long value);
-		void	actualPrice(std::string date, int value);
+		void	checkValue(double value);
+		void	actualPrice(std::string date, double value);
 		int		isIntLiteral(std::string line);
 };
