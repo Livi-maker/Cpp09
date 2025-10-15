@@ -32,4 +32,5 @@ class BitcoinExchange
 		void	checkDate(std::string line);
 		void	checkValue(long value);
 		void	actualPrice(std::string date, int value);
+		int		isIntLiteral(std::string line);
 };
