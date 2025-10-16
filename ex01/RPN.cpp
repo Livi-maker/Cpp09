@@ -28,10 +28,12 @@ void Rpn::startCalculation(std::string input)
 	{
 		if (input[i] == ' ')
 			continue ;
-		if (input[i] >= '0' && input[i] <= '9')
-			list.push(input[i] - '0');
-		else if (isOperator(input[i]))
+		if (isOperator(input[i]))
 			calculate(input[i]);
+		else if (input[i] >= '0' && input[i] <= '9' && input[i + 1] == ' ')
+			list.push(input[i] - '0');
+		else
+			throw std::runtime_error("Error");
 	}
 }
 

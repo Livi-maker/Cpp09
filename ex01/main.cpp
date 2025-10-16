@@ -7,5 +7,13 @@ int main(int ac, char** av)
 		std::cout << "Error" << std::endl;
 		return 1;
 	}
-	Rpn	calculate(av[1]);
+	try
+	{
+		Rpn	calculate(av[1]);
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+	}
+	return (0);
 }
