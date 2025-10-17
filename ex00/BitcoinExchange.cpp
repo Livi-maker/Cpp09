@@ -66,16 +66,16 @@ void	BitcoinExchange::printPrices(std::string line)
 	if (line == "date | value")
 		return ;
 	int	pipe;
-	double value;
+	std::string value;
 
 	pipe = line.find("|");
 	if (pipe == -1)
 		throw std::runtime_error("Error: bad input => " + line);
-	date = line.substr(0, pipe);
-	value = std::strtod(line.substr(pipe + 1).c_str(), NULL);
+	date = line.substr(0, pipe - 1);
+	value = line.substr(pipe + 1);
 	checkDate(date);
 	checkValue(value);
-	actualPrice(date, value);
+	actualPrice(date, std::strtod(value.c_str(), NULL));
 }
 
 void	BitcoinExchange::checkDate(std::string date)
@@ -94,20 +94,24 @@ void	BitcoinExchange::checkDate(std::string date)
 		throw std::runtime_error("Error: bad input => " + date);
 	year = date.substr(0, separator1);
 	month = date.substr(separator1 + 1, separator2 - (separator1 + 1));
-	day = date.substr(separator2 + 1, 2);
+	day = date.substr(separator2 + 1);
 	if (isIntLiteral(year) != 1 || isIntLiteral(month) != 1 || isIntLiteral(day) != 1)
 		throw std::runtime_error("Error: bad input => " + date);
-	if (std::atoi(year.c_str()) < 2008 || std::atoi(month.c_str()) < 1 || std::atoi(month.c_str()) > 12 || std::atoi(day.c_str()) < 1 || std::atoi(day.c_str()) > 31)
-		throw	std::runtime_error("Error: bad input => " + date);
+	if (validDate(std::atoi(year.c_str()), std::atoi(month.c_str()), std::atoi(day.c_str())) == false)
+		throw	std::runtime_error("Error: invalid date => " + date);
 
 }
 
-void	BitcoinExchange::checkValue(double value)
+void	BitcoinExchange::checkValue(std::string value)
 {
-	if (value < 0)
+	double v = std::strtod(value.c_str() + 1, NULL);
+
+	if (v < 0)
 		throw std::runtime_error("Error: not a positive number.");
-	if (value > 2147483647)
+	if (v > 2147483647)
 		throw std::runtime_error("Error: too large a number.");
+	if (rightFormatValue(value) == false)
+		throw std::runtime_error("Error: bad value =>" + value);
 }
 
 void	BitcoinExchange::actualPrice(std::string date, double value)
@@ -118,6 +122,23 @@ void	BitcoinExchange::actualPrice(std::string date, double value)
 	if (it == prices.end() || (date != it->first && it != prices.begin()))
 		it--;
 	std::cout << date << " => " << value << " => " << value * it->second << std::endl;
+}
+
+bool	BitcoinExchange::rightFormatValue(std::string literal)
+{
+	long	number = 0;
+
+	if (literal[0] != ' ')
+		return false;
+	for (size_t i = 1; i < literal.length(); i++)
+	{
+		if ((literal[i] < '0' || literal[i] > '9') && literal[i] != '.')
+			return false;
+		number = (number * 10) + (literal[i] - '0');
+	}
+	if (number > 2147483647 || number  < -2147483648)
+			return false;
+	return true;
 }
 
 int	BitcoinExchange::isIntLiteral(std::string literal)
@@ -141,4 +162,17 @@ int	BitcoinExchange::isIntLiteral(std::string literal)
 	if ((number * sign) > 2147483647 || (number * sign) < -2147483648)
 			return (3);
 	return (1);
+}
+
+bool	BitcoinExchange::validDate(int year, int month, int day)
+{
+	if (year < 2008 || year > 2025 || day < 1 || day > 31 || month < 1 || month > 12)
+		return false;
+	if (day == 31 && (month == 11 || month == 4 || month == 6 || month == 9))
+		return false;
+	if (month == 2 && (year % 4) == 0 && day > 29)
+		return false;
+	if (month == 2 && (year % 4) != 0 && day > 28)
+		return false;
+	return true;
 }
