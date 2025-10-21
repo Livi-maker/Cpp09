@@ -24,6 +24,8 @@ Rpn::~Rpn(void) {}
 
 void Rpn::startCalculation(std::string input)
 {
+	if (!input[0])
+		throw std::runtime_error("Error");
 	for (size_t i = 0; i < input.length(); i++)
 	{
 		if (input[i] == ' ')
@@ -51,6 +53,8 @@ void	Rpn::calculate(char i)
 {
 	int last;
 
+	if (list.size() < 2)
+		throw std::runtime_error("Error");
 	last = list.top();
 	list.pop();
 	if (i == '-')
@@ -59,6 +63,8 @@ void	Rpn::calculate(char i)
 		list.top() += last;
 	else if (i == '*')
 		list.top() *= last;
-	else if (i == '/')
+	else if (i == '/' && last != 0)
 		list.top() /= last;
+	else if (i == '/')
+		throw std::runtime_error("Error");
 }
