@@ -5,9 +5,8 @@ PmergeMe::PmergeMe(void)
 
 PmergeMe::PmergeMe(std::vector<int> numbers)
 {
-	std::cout << "Before: ";
-	printContainer(numbers);
 	mergeInsertion(numbers);
+	std::cout << "After: ";
 	printContainer(ordered);
 }
 
@@ -18,7 +17,10 @@ void	PmergeMe::mergeInsertion(std::vector<int> numbers)
 	std::vector<int>::iterator it;
 
 	if (numbers.size() == 1)
+	{
+		ordered.push_back(numbers.front());
 		return ;
+	}
 	for (it = numbers.begin(); it < numbers.end(); it += 2)
 	{
 		if (it == numbers.end() - 1)
@@ -34,8 +36,6 @@ void	PmergeMe::mergeInsertion(std::vector<int> numbers)
 			max.push_back(*it);
 		}
 	}
-	printContainer(max);
-	printContainer(min);
 	mergeInsertion(max);
 	insert(min);
 }
@@ -46,7 +46,16 @@ void	PmergeMe::insert(std::vector<int> min)
 
 	for (size_t i = 0; i < min.size(); i++)
 	{
-		ordered.push_back(min[i]);
+		for (it = ordered.begin(); it < ordered.end(); it++)
+		{
+			if (*it > min[i])
+			{
+				ordered.insert(it, min[i]);
+				break ;
+			}
+		}
+		if (it == ordered.end())
+			ordered.push_back(min[i]);
 	}
 }
 
@@ -63,4 +72,3 @@ PmergeMe& PmergeMe::operator= (const PmergeMe& ref)
 
 PmergeMe::~PmergeMe(void)
 {}
-
