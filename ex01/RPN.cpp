@@ -6,6 +6,8 @@ Rpn::Rpn(void)
 Rpn::Rpn(std::string input)
 {
 	startCalculation(input);
+	if (list.size() > 1)
+		throw std::runtime_error("Error");
 	std::cout << list.top() << std::endl;
 }
 
