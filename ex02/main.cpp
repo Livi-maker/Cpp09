@@ -26,11 +26,11 @@ int main(int ac, char** av)
 		return 1;
 	std::vector<int> numbers;
 	std::deque<int> num;
+	clock_t parsetime;
 	clock_t timeBefore;
 	clock_t timeAfter;
-	double checkTime;
 
-	timeBefore = clock();
+	parsetime = clock();
 	for (int i = 1; i < ac; i++)
 	{
 		if (isInt(av[i]) == false)
@@ -38,20 +38,23 @@ int main(int ac, char** av)
 			std::cout << "Error" << std::endl;
 			return 1;
 		}
-		numbers.push_back(std::atoi(av[i]));
 	}
+	parsetime = clock() - parsetime;
+	timeBefore = clock();
+	for (int i = 1; i < ac; i++)
+		numbers.push_back(std::atoi(av[i]));
 	std::cout << "Before: ";
 	printContainer(numbers);
-	PmergeMe ToSorte(numbers);
+	PmergeMe vectorSorting(numbers);
 	timeAfter = clock();
-	double timeVector = double(timeAfter - timeBefore) * 1e6 / CLOCKS_PER_SEC;
+	double timeVector = double(timeAfter - timeBefore + parsetime) * 1e6 / CLOCKS_PER_SEC;
 	std::cout << "Time to process a range of " << numbers.size() << " elements with std::vector : " << timeVector << " us" << std::endl;
 
 	timeBefore = clock();
 	for (int i = 1; i < ac; i++)
 		num.push_back(std::atoi(av[i]));
-	PmergeMe second(num);
+	PmergeMe dequeSorting(num);
 	timeAfter = clock();
-	timeVector = double(timeAfter - timeBefore) * 1e6 / CLOCKS_PER_SEC;
+	timeVector = double(timeAfter - timeBefore + parsetime) * 1e6 / CLOCKS_PER_SEC;
 	std::cout << "Time to process a range of " << numbers.size() << " elements with std::deque : " << timeVector << " us" << std::endl;
 }

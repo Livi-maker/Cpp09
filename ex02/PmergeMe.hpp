@@ -27,8 +27,9 @@ class PmergeMe
 	private:
 		std::vector<int> ordered;
 		std::deque<int> order;
-		void	mergeInsertion(std::vector<int> numbers);
+		void	mergeInsertion(std::vector<int> numbers, std::vector<int> jacobsthal);
 		void	mergeInsertion(std::deque<int> numbers);
-		void	insert(std::vector<int> min);
+		void	insert(std::vector<int> min, std::vector<int> jacobsthal);
 		void	insert(std::deque<int> min);
+		std::vector<int> JacobsthalNumbers(int size);
 };

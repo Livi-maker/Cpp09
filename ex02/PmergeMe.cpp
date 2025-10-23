@@ -5,7 +5,8 @@ PmergeMe::PmergeMe(void)
 
 PmergeMe::PmergeMe(std::vector<int> numbers)
 {
-	mergeInsertion(numbers);
+	std::vector<int> jacobsthal = JacobsthalNumbers(numbers.size() / 2);
+	mergeInsertion(numbers, jacobsthal);
 	std::cout << "After: ";
 	printContainer(ordered);
 }
@@ -15,7 +16,7 @@ PmergeMe::PmergeMe(std::deque<int> numbers)
 	mergeInsertion(numbers);
 }
 
-void	PmergeMe::mergeInsertion(std::vector<int> numbers)
+void	PmergeMe::mergeInsertion(std::vector<int> numbers, std::vector<int> jacobsthal)
 {
 	std::vector<int> max;
 	std::vector<int> min;
@@ -41,8 +42,8 @@ void	PmergeMe::mergeInsertion(std::vector<int> numbers)
 			max.push_back(*it);
 		}
 	}
-	mergeInsertion(max);
-	insert(min);
+	mergeInsertion(max, jacobsthal);
+	insert(min, jacobsthal);
 }
 
 void	PmergeMe::mergeInsertion(std::deque<int> numbers)
@@ -75,10 +76,11 @@ void	PmergeMe::mergeInsertion(std::deque<int> numbers)
 	insert(min);
 }
 
-void	PmergeMe::insert(std::vector<int> min)
+void	PmergeMe::insert(std::vector<int> min, std::vector<int> jacobsthal)
 {
 	std::vector<int>::iterator it;
 
+	(void) jacobsthal;
 	for (size_t i = 0; i < min.size(); i++)
 	{
 		for (it = ordered.begin(); it < ordered.end(); it++)
@@ -113,6 +115,21 @@ void	PmergeMe::insert(std::deque<int> min)
 	}
 }
 
+std::vector<int> PmergeMe::JacobsthalNumbers(int size)
+{
+	std::vector<int> numbers;
+	std::vector<int>::iterator it;
+
+	numbers.push_back(0);
+	numbers.push_back(1);
+	it = numbers.end() - 1;
+	while (*it < size)
+	{
+		numbers.push_back(*it + *(it - 1) * 2);
+		it = numbers.end() - 1;
+	}
+	return numbers;
+}
 PmergeMe::PmergeMe(const PmergeMe& ref)
 {
 	*this = ref;
