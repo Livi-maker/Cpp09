@@ -13,7 +13,8 @@ PmergeMe::PmergeMe(std::vector<int> numbers)
 
 PmergeMe::PmergeMe(std::deque<int> numbers)
 {
-	mergeInsertion(numbers);
+	std::vector<int> jacobsthal = JacobsthalNumbers(numbers.size() / 2);
+	mergeInsertion(numbers, jacobsthal);
 }
 
 void	PmergeMe::mergeInsertion(std::vector<int> numbers, std::vector<int> jacobsthal)
@@ -46,7 +47,7 @@ void	PmergeMe::mergeInsertion(std::vector<int> numbers, std::vector<int> jacobst
 	insert(min, jacobsthal);
 }
 
-void	PmergeMe::mergeInsertion(std::deque<int> numbers)
+void	PmergeMe::mergeInsertion(std::deque<int> numbers, std::vector<int> jacobsthal)
 {
 	std::deque<int> max;
 	std::deque<int> min;
@@ -72,46 +73,63 @@ void	PmergeMe::mergeInsertion(std::deque<int> numbers)
 			max.push_back(*it);
 		}
 	}
-	mergeInsertion(max);
-	insert(min);
+	mergeInsertion(max, jacobsthal);
+	insert(min, jacobsthal);
 }
 
 void	PmergeMe::insert(std::vector<int> min, std::vector<int> jacobsthal)
 {
 	std::vector<int>::iterator it;
 
-	(void) jacobsthal;
-	for (size_t i = 0; i < min.size(); i++)
+	it = jacobsthal.begin();
+	while (it + 1 != jacobsthal.end() && *(it + 1) < (int)min.size())
 	{
-		for (it = ordered.begin(); it < ordered.end(); it++)
-		{
-			if (*it > min[i])
-			{
-				ordered.insert(it, min[i]);
-				break ;
-			}
-		}
-		if (it == ordered.end())
-			ordered.push_back(min[i]);
+		binarySearch(min, (*it) - 1, (*(it+1)) - 1);
+		it++;
+	}
+	if (min.size() > 3)
+		binarySearch(min, *it, min.size() - 1);
+	else
+		binarySearch(min, (*it) - 1, min.size() - 1);
+}
+
+void	PmergeMe::binarySearch(std::vector<int> min, int jac1, int jac2)
+{
+	std::vector<int>::iterator it;
+
+	while (jac2 >= jac1)
+	{
+		it = std::lower_bound(ordered.begin(), ordered.end(), min[jac2]);
+		ordered.insert(it, min[jac2]);
+		jac2--;
 	}
 }
 
-void	PmergeMe::insert(std::deque<int> min)
+void	PmergeMe::insert(std::deque<int> min, std::vector<int> jacobsthal)
+{
+	std::vector<int>::iterator it;
+
+	it = jacobsthal.begin();
+	while (it + 1 != jacobsthal.end() && *(it + 1) < (int)min.size())
+	{
+		binarySearch(min, (*it) - 1, (*(it+1)) - 1);
+		it++;
+	}
+	if (min.size() > 3)
+		binarySearch(min, *it, min.size() - 1);
+	else
+		binarySearch(min, (*it) - 1, min.size() - 1);
+}
+
+void	PmergeMe::binarySearch(std::deque<int> min, int jac1, int jac2)
 {
 	std::deque<int>::iterator it;
 
-	for (size_t i = 0; i < min.size(); i++)
+	while (jac2 >= jac1)
 	{
-		for (it = order.begin(); it < order.end(); it++)
-		{
-			if (*it > min[i])
-			{
-				order.insert(it, min[i]);
-				break ;
-			}
-		}
-		if (it == order.end())
-			ordered.push_back(min[i]);
+		it = std::lower_bound(order.begin(), order.end(), min[jac2]);
+		order.insert(it, min[jac2]);
+		jac2--;
 	}
 }
 
@@ -120,8 +138,8 @@ std::vector<int> PmergeMe::JacobsthalNumbers(int size)
 	std::vector<int> numbers;
 	std::vector<int>::iterator it;
 
-	numbers.push_back(0);
 	numbers.push_back(1);
+	numbers.push_back(3);
 	it = numbers.end() - 1;
 	while (*it < size)
 	{
@@ -130,6 +148,7 @@ std::vector<int> PmergeMe::JacobsthalNumbers(int size)
 	}
 	return numbers;
 }
+
 PmergeMe::PmergeMe(const PmergeMe& ref)
 {
 	*this = ref;

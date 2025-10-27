@@ -28,8 +28,10 @@ class PmergeMe
 		std::vector<int> ordered;
 		std::deque<int> order;
 		void	mergeInsertion(std::vector<int> numbers, std::vector<int> jacobsthal);
-		void	mergeInsertion(std::deque<int> numbers);
+		void	mergeInsertion(std::deque<int> numbers, std::vector<int> jacobsthal);
 		void	insert(std::vector<int> min, std::vector<int> jacobsthal);
-		void	insert(std::deque<int> min);
+		void	insert(std::deque<int> min, std::vector<int> jacobsthal);
+		void	binarySearch(std::vector<int> min, int jac1, int jac2);
+		void	binarySearch(std::deque<int> min, int jac1, int jac2);
 		std::vector<int> JacobsthalNumbers(int size);
 };
